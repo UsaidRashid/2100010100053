@@ -1,8 +1,12 @@
 const axios = require('axios');
 
 module.exports.getTopProducts = async (req,res) => {
-    const { categoryname } = req.params;
-    const { top = 5, minPrice = 0, maxPrice = 100000 } = req.query;
+  console.log(req.params);
+  const { categoryname, top, minPrice, maxPrice } = req.params;
+
+  if (!categoryname || !top || !minPrice || !maxPrice) {
+    return res.status(400).json({ error: 'Missing required query parameters' });
+  }
 
     const apiUrls = [`http://20.244.56.144/test/companies/AMZ/categories/${categoryname}/products?top=${top}&minPrice=${minPrice}&maxPrice=${maxPrice}`,
                     `http://20.244.56.144/test/companies/SNP/categories/${categoryname}/products?top=${top}&minPrice=${minPrice}&maxPrice=${maxPrice}`
@@ -32,5 +36,6 @@ module.exports.getTopProducts = async (req,res) => {
             error: error.message
           });
         }
-      }
+    }
+    return res.status(200).json(responses);
 };
