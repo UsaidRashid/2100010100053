@@ -1,10 +1,34 @@
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import axios from 'axios';
 
 function App() {
+  const [responses, setResponses] = useState([]);
+  const [categoryname, setCategoryname] = useState('');
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/categories/${categoryname}/products`); 
+      setResponses(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   return (
     <Container>
+      <h1>Products Listings</h1>
+      <div className="text-center my-4">
+        <input
+          type="text"
+          className="form-control mb-2"
+          placeholder="Enter category name"
+          value={categoryname}
+          onChange={(e)=>setCategoryname(e.target.value)}
+        />
+        <button className="btn btn-primary" onClick={fetchData}>Fetch Data</button>
+      </div>
     {responses.map((companyData, index) => (
       <div key={index} className="my-4">
         <h2 className="mb-4">Company {index + 1}</h2>
